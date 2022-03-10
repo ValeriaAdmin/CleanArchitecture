@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.clean_architecture.R
 import com.example.data.data.repository.UserRepositoryImp
 import com.example.data.data.storage.sharedpref.SharedPrefUserStorage
@@ -12,38 +15,33 @@ import clean_architecture.domain.model.SaveUserNameModel
 import clean_architecture.domain.usecase.GetUserNameUseCase
 import clean_architecture.domain.usecase.SaveUserNameUseCase
 
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
 
-    private val userStorage by lazy {
-        SharedPrefUserStorage(context = application)
-    }
-    private val userRep by lazy {
-        UserRepositoryImp(userStorege = userStorage)
-    }
-    private val saveUserNameUseCase by lazy {
-        SaveUserNameUseCase(userRepository = userRep)
-    }
-    private val getUserNameUseCase by lazy {
-        GetUserNameUseCase(userRepository = userRep)
-    }
+
+    private  lateinit var vm: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        vm = ViewModelProvider(this,MainViewModelFactory(this)).get(MainViewModel::class.java)
 
         val editText = findViewById<EditText>(R.id.editDataText)
         val textView = findViewById<TextView>(R.id.textView)
         val getDataBtn = findViewById<Button>(R.id.getDataBtn)
         val saveDataBtn = findViewById<Button>(R.id.saveDataBtn)
 
+        vm.resultLiveData.observe(this) {
+            textView.text = it
+        }
+
         saveDataBtn.setOnClickListener {
             val text = editText.text.toString();
-            val param = SaveUserNameModel(name = text)
-            textView.text = saveUserNameUseCase.execute(param = param).toString()
+            vm.save(text)
 
         }
         getDataBtn.setOnClickListener {
-            textView.text = getUserNameUseCase.execute().name
+            vm.load()
         }
     }
 }
