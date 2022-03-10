@@ -1,23 +1,27 @@
 package com.example.clean_architecture.data.repository
 
-import android.content.Context
+import com.example.clean_architecture.data.storage.model.UserModel
+import com.example.clean_architecture.data.storage.sharedpref.UserStorage
 import com.example.clean_architecture.domain.model.SaveUserNameModel
 import com.example.clean_architecture.domain.model.UserName
 import com.example.clean_architecture.domain.repository.UserRepository
 
-private const val SHARED_PREF_NAME = "shared pref"
-private const val PREFERENCES_NAME = "preferens name"
-class UserRepositoryImp( context: Context): UserRepository {
 
-    val sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
+class UserRepositoryImp(private val userStorege: UserStorage) : UserRepository {
 
-    override fun saveName(saveNameParam: SaveUserNameModel) : Boolean{
-        sharedPreferences.edit().putString(PREFERENCES_NAME, saveNameParam.name.toString()).apply()
-        return saveNameParam.name.isNotEmpty()
+    override fun saveName(saveNameParam: SaveUserNameModel): Boolean {
+        val user = mapToStorage(saveNameParam)
+        return userStorege.save(user)
     }
 
-    override fun getName():UserName{
-        val name = sharedPreferences.getString(PREFERENCES_NAME,"").toString()
-        return UserName(name = name);
+    override fun getName(): UserName {
+        return mapToDomain(userStorege.get())
+
+    }
+    private fun mapToDomain(user: UserModel): UserName{
+        return UserName(name = user.name)
+    }
+    private fun mapToStorage(saveNameParam: SaveUserNameModel): UserModel{
+        return UserModel(name = saveNameParam.name)
     }
 }
