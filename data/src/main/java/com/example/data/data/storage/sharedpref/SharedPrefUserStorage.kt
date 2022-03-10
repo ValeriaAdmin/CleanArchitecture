@@ -1,7 +1,7 @@
-package com.example.clean_architecture.data.storage.sharedpref
+package com.example.data.data.storage.sharedpref
 
 import android.content.Context
-import com.example.clean_architecture.data.storage.model.UserModel
+import com.example.data.data.storage.model.UserModel
 
 
 
