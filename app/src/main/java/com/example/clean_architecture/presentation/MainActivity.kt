@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,17 +15,18 @@ import com.example.data.data.storage.sharedpref.SharedPrefUserStorage
 import clean_architecture.domain.model.SaveUserNameModel
 import clean_architecture.domain.usecase.GetUserNameUseCase
 import clean_architecture.domain.usecase.SaveUserNameUseCase
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-
-    private  lateinit var vm: MainViewModel
+    private val vm: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        vm = ViewModelProvider(this,MainViewModelFactory(this)).get(MainViewModel::class.java)
 
         val editText = findViewById<EditText>(R.id.editDataText)
         val textView = findViewById<TextView>(R.id.textView)
@@ -38,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         saveDataBtn.setOnClickListener {
             val text = editText.text.toString();
             vm.save(text)
-
         }
         getDataBtn.setOnClickListener {
             vm.load()

@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import clean_architecture.domain.model.SaveUserNameModel
 import clean_architecture.domain.usecase.GetUserNameUseCase
 import clean_architecture.domain.usecase.SaveUserNameUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-
-class MainViewModel(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val saveUserNameUseCase: SaveUserNameUseCase,
     private val getUserNameUseCase: GetUserNameUseCase
 ) : ViewModel() {
