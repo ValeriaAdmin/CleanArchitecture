@@ -23,5 +23,6 @@ class MainViewModel(
     }
 
     fun load() {
-        result.value = getUserNameUseCase.execute().name}
+        result.value = getUserNameUseCase.execute().name
+    }
 }

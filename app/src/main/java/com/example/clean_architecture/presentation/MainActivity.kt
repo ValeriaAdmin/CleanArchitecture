@@ -14,17 +14,20 @@ import com.example.data.data.storage.sharedpref.SharedPrefUserStorage
 import clean_architecture.domain.model.SaveUserNameModel
 import clean_architecture.domain.usecase.GetUserNameUseCase
 import clean_architecture.domain.usecase.SaveUserNameUseCase
+import com.example.clean_architecture.app.App
 
 class MainActivity : AppCompatActivity() {
 
-
-    private  lateinit var vm: MainViewModel
+    @javax.inject.Inject
+    lateinit var vmFactory: MainViewModelFactory
+    private lateinit var vm: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        vm = ViewModelProvider(this,MainViewModelFactory(this)).get(MainViewModel::class.java)
+        (applicationContext as App).appComponent.inject(mainActivity = this)
+        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
 
         val editText = findViewById<EditText>(R.id.editDataText)
         val textView = findViewById<TextView>(R.id.textView)
